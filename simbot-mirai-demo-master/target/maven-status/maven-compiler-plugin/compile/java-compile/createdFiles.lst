@@ -1,0 +1,4 @@
+love\simbot\example\pojo\msg.class
+love\simbot\example\SimbotExampleApplication.class
+love\simbot\example\listener\MyGroupListen.class
+love\simbot\example\listener\MyPrivateListen.class
