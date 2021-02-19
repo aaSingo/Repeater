@@ -86,7 +86,7 @@ public class MyGroupListen {
 //        System.out.println(groupInfo.getGroupName());
         String groupId = groupInfo.getGroupCode();
         String msgQid = accountInfo.getAccountCode();
-        String msgText = groupMsg.getText();
+        String msgText = groupMsg.getMsg();
         msg msgPojo = new msg(groupId,msgQid,msgText);
         int size = 0;
         //System.out.println(groupMsg.getText());
@@ -103,7 +103,9 @@ public class MyGroupListen {
         int a = 0;
         for (msg msg1 : msgList) {
             if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
-                a = a + 1;
+                if(!msgQid.equals(msg1.getMsgQid())){
+                    a = a + 1;
+                }
                 //System.out.println("chenggong");
                 //System.out.println(a);
             }
