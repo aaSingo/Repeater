@@ -1,6 +1,6 @@
 simbot:
   core:
-    bots: 号码:密码
+    bots: 752115531:89088046ch
   component:
     mirai:
       # 可选值为：ANDROID_PHONE、ANDROID_PAD、ANDROID_WATCH

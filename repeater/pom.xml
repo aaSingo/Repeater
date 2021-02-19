@@ -27,6 +27,24 @@
         </dependency>
 
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
@@ -37,6 +55,9 @@
     </dependencies>
 
     <packaging>jar</packaging>
+
+
+
     <build>
         <plugins>
             <!--下面是将应用打包发布需要增加的插件-->
@@ -52,6 +73,8 @@
                 </executions>
             </plugin>
         </plugins>
+
+
     </build>
 
 </project>

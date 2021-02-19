@@ -12,6 +12,7 @@ import love.forte.simbot.api.message.containers.GroupInfo;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.simbot.example.pojo.msg;
+import love.simbot.example.utils.YmlUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ public class MyGroupListen {
     /** log */
     //private static final Logger LOG = LoggerFactory.getLogger(MyGroupListen.class);
 
-
     @Depend
     private MessageContentBuilderFactory messageContentBuilderFactory;
 
@@ -46,7 +46,11 @@ public class MyGroupListen {
      * 由于你监听的是一个群消息，因此你可以通过 {@link GroupMsg} 作为参数来接收群消息内容。
      */
     @OnGroup
-    public void onGroupMsg(GroupMsg groupMsg, MsgSender sender) {
+
+    public void onGroupMsg(GroupMsg groupMsg, MsgSender sender) throws Exception{
+
+        String groupIds = YmlUtils.getValue("groupIds");
+
         // 打印此次消息中的 纯文本消息内容。
         // 纯文本消息中，不会包含任何特殊消息（例如图片、表情等）。
 
@@ -87,40 +91,46 @@ public class MyGroupListen {
         String groupId = groupInfo.getGroupCode();
         String msgQid = accountInfo.getAccountCode();
         String msgText = groupMsg.getMsg();
-        msg msgPojo = new msg(groupId,msgQid,msgText);
-        int size = 0;
-        //System.out.println(groupMsg.getText());
-        msgList.add(msgPojo);
-        //System.out.println(msgList);
-        size = msgList.size();
-        System.out.println(size);
-        if (size >= 500) {
-            for (int j=0;j<250;j++){
-                msgList.remove(0);
-            }
-        }
-        //System.out.println(groupMsg.getText()+groupId);
-        int a = 0;
-        for (msg msg1 : msgList) {
-            if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
-                if(!msgQid.equals(msg1.getMsgQid())){
-                    a = a + 1;
-                }
-                //System.out.println("chenggong");
-                //System.out.println(a);
-            }
-        }
-        MessageContentBuilder msgBuilder = messageContentBuilderFactory.getMessageContentBuilder();
 
-        if(msgText == null || "".equals(msgText)){
+        boolean b = groupIds.contains(groupId);
+        if (b == true){
+            msg msgPojo = new msg(groupId,msgQid,msgText);
+            int size = 0;
+            //System.out.println(groupMsg.getText());
+            msgList.add(msgPojo);
+            //System.out.println(msgList);
+            size = msgList.size();
+            System.out.println(size);
+            if (size >= 100) {
+                for (int j=0;j<50;j++){
+                    msgList.remove(0);
+                }
+            }
+            //System.out.println(groupMsg.getText()+groupId);
+            int a = 0;
+            for (msg msg1 : msgList) {
+                if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
+                    if(!msgQid.equals(msg1.getMsgQid())){
+                        a = a + 1;
+                    }
+                    //System.out.println("chenggong");
+                    //System.out.println(a);
+                }
+            }
+            MessageContentBuilder msgBuilder = messageContentBuilderFactory.getMessageContentBuilder();
+
+            if(msgText == null || "".equals(msgText)){
             }else {
-            if(a == 1) {
-                MessageContentBuilder text = msgBuilder.text(msgText);
-                System.out.println("发送:"+msgText+"   群名"+groupInfo.getGroupName());
-                logger.debug("发送:"+msgText+"   群名:"+groupInfo.getGroupName());
-                sender.SENDER.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
+                if(a == 1) {
+                    MessageContentBuilder text = msgBuilder.text(msgText);
+                    System.out.println("发送:"+msgText+"   群名"+groupInfo.getGroupName());
+                    logger.debug("发送:"+msgText+"   群名:"+groupInfo.getGroupName());
+                    sender.SENDER.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
+                }
+            }
         }
-        }
+
+
     }
 
 
