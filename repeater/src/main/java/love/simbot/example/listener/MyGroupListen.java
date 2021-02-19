@@ -114,7 +114,7 @@ public class MyGroupListen {
 
         if(msgText == null || "".equals(msgText)){
             }else {
-            if(a == 2) {
+            if(a == 1) {
                 MessageContentBuilder text = msgBuilder.text(msgText);
                 System.out.println("发送:"+msgText+"   群名"+groupInfo.getGroupName());
                 logger.debug("发送:"+msgText+"   群名:"+groupInfo.getGroupName());
