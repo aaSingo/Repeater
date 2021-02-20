@@ -1,6 +1,5 @@
 package love.simbot.example.listener;
 
-import catcode.Neko;
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.annotation.OnGroup;
@@ -16,7 +15,6 @@ import love.simbot.example.utils.YmlUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -68,12 +66,6 @@ public class MyGroupListen {
 
         // 打印消息主体
 //        System.out.println(msgContent);
-        // 打印消息主体中的所有图片的链接（如果有的话）
-        List<Neko> imageCats = msgContent.getCats("image");
-//        System.out.println("img counts: " + imageCats.size());
-//        for (Neko image : imageCats) {
-//            System.out.println("Img url: " + image.get("url"));
-//        }
 
 
         // 获取发消息的人。
@@ -94,6 +86,17 @@ public class MyGroupListen {
 
         boolean b = groupIds.contains(groupId);
         if (b == true){
+            //System.out.println(msgText);
+            //System.out.println(groupMsg.getMsgContent());
+            // 打印消息主体中的所有图片的链接（如果有的话）
+           /* List<Neko> imageCats = msgContent.getCats("image");
+            System.out.println("img counts: " + imageCats.size());
+            for (Neko image : imageCats) {
+                //System.out.println("Img url: " + image.get("url"));
+            }*/
+
+
+
             msg msgPojo = new msg(groupId,msgQid,msgText);
             int size = 0;
             //System.out.println(groupMsg.getText());
@@ -109,19 +112,31 @@ public class MyGroupListen {
             //System.out.println(groupMsg.getText()+groupId);
             int a = 0;
             for (msg msg1 : msgList) {
-                if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
-                    if(!msgQid.equals(msg1.getMsgQid())){
-                        a = a + 1;
+
+                if (msgText.contains("image,id")){
+                    if (msgText.startsWith("[") && msgText.endsWith("]")){
+                        String[] str = msgText.split(",");
+                        String jpgIds =  str[1];
+                        if(msg1.getMsgText().contains(jpgIds)&& groupId.equals(msg1.getGroupId())){
+                            //if(!msgQid.equals(msg1.getMsgQid())) {
+                            a = a + 1;
+                            //}
+                        }
                     }
-                    //System.out.println("chenggong");
-                    //System.out.println(a);
+
+                }else {
+                    if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
+                       //if(!msgQid.equals(msg1.getMsgQid())){
+                            a = a + 1;
+                       // }
+                    }
                 }
             }
             MessageContentBuilder msgBuilder = messageContentBuilderFactory.getMessageContentBuilder();
 
             if(msgText == null || "".equals(msgText)){
             }else {
-                if(a == 1) {
+                if(a == 3) {
                     MessageContentBuilder text = msgBuilder.text(msgText);
                     System.out.println("发送:"+msgText+"   群名"+groupInfo.getGroupName());
                     logger.debug("发送:"+msgText+"   群名:"+groupInfo.getGroupName());
