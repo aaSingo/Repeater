@@ -1,5 +1,6 @@
 package love.simbot.example.listener;
 
+import catcode.Neko;
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.annotation.OnGroup;
@@ -15,6 +16,7 @@ import love.simbot.example.utils.YmlUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -89,8 +91,8 @@ public class MyGroupListen {
             //System.out.println(msgText);
             //System.out.println(groupMsg.getMsgContent());
             // 打印消息主体中的所有图片的链接（如果有的话）
-           /* List<Neko> imageCats = msgContent.getCats("image");
-            System.out.println("img counts: " + imageCats.size());
+            List<Neko> imageCats = msgContent.getCats("image");
+           /* System.out.println("img counts: " + imageCats.size());
             for (Neko image : imageCats) {
                 //System.out.println("Img url: " + image.get("url"));
             }*/
@@ -104,8 +106,8 @@ public class MyGroupListen {
             //System.out.println(msgList);
             size = msgList.size();
             System.out.println(size);
-            if (size >= 100) {
-                for (int j=0;j<50;j++){
+            if (size >= 200) {
+                for (int j=0;j<100;j++){
                     msgList.remove(0);
                 }
             }
@@ -134,7 +136,7 @@ public class MyGroupListen {
             }
             MessageContentBuilder msgBuilder = messageContentBuilderFactory.getMessageContentBuilder();
 
-            if(msgText == null || "".equals(msgText)){
+            if(msgText == null || "".equals(msgText) || imageCats.size() >1){
             }else {
                 if(a == 3) {
                     MessageContentBuilder text = msgBuilder.text(msgText);
