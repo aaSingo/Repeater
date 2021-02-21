@@ -12,9 +12,11 @@ import love.forte.simbot.api.message.containers.GroupInfo;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.simbot.example.pojo.msg;
-import love.simbot.example.utils.YmlUtils;
 import org.apache.log4j.Logger;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +50,9 @@ public class MyGroupListen {
     @OnGroup
 
     public void onGroupMsg(GroupMsg groupMsg, MsgSender sender) throws Exception{
-
-        String groupIds = YmlUtils.getValue("groupIds");
+        Path p = Paths.get("groupIds.txt");
+        byte[] data = Files.readAllBytes(p);
+        String groupIds = new String(data, "utf-8");
 
         // 打印此次消息中的 纯文本消息内容。
         // 纯文本消息中，不会包含任何特殊消息（例如图片、表情等）。
@@ -86,6 +89,13 @@ public class MyGroupListen {
         String msgQid = accountInfo.getAccountCode();
         String msgText = groupMsg.getMsg();
 
+        if("973941719".equals(msgQid)){
+            sender.SENDER.sendGroupMsg(groupMsg, "你飞机呢");
+        }
+        if("2272714716".equals(msgQid)){
+            sender.SENDER.sendGroupMsg(groupMsg, "发生甚么事了");
+        }
+
         boolean b = groupIds.contains(groupId);
         if (b == true){
             //System.out.println(msgText);
@@ -106,8 +116,8 @@ public class MyGroupListen {
             //System.out.println(msgList);
             size = msgList.size();
             System.out.println(size);
-            if (size >= 200) {
-                for (int j=0;j<100;j++){
+            if (size >= 500) {
+                for (int j=0;j<250;j++){
                     msgList.remove(0);
                 }
             }
@@ -149,12 +159,4 @@ public class MyGroupListen {
 
 
     }
-
-
-
-
-
-
-
-
 }

@@ -1,21 +1,29 @@
 package love.simbot.example.listener;
 
-import catcode.CatCodeUtil;
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.annotation.OnPrivate;
 import love.forte.simbot.api.message.MessageContent;
-import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.PrivateMsg;
+import love.forte.simbot.api.message.results.GroupList;
+import love.forte.simbot.api.message.results.SimpleGroupInfo;
+import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.api.sender.Sender;
+import love.simbot.example.utils.ReUtils;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 私聊消息监听的示例类。
  * 所有需要被管理的类都需要标注 {@link Beans} 注解。
  * @author ForteScarlet
  */
-//@Beans
+@Beans
 public class MyPrivateListen {
 
     /**
@@ -37,10 +45,75 @@ public class MyPrivateListen {
      * 当然，你也可以使用 {@link love.forte.simbot.api.sender.MsgSender}，
      * 然后 {@code msgSender.SENDER}.
      */
-    //@OnPrivate
-    public void replyPrivateMsg1(PrivateMsg privateMsg, Sender sender){
-        // 获取消息正文。
+    @OnPrivate
+    public void replyPrivateMsg1(PrivateMsg privateMsg, MsgSender sender)throws Exception {
         MessageContent msgContent = privateMsg.getMsgContent();
+        String msgText = msgContent.getMsg();
+        GroupList groupList = sender.GETTER.getGroupList();
+        List<SimpleGroupInfo> groupInfo = groupList.getResults();
+        StringBuilder groupSb = new StringBuilder();
+        for (SimpleGroupInfo s: groupInfo) {
+            groupSb = groupSb.append(s.getGroupCode()).append(",");
+        }
+        String groupStr = groupSb + "";
+        String[] s = msgText.split(" ");
+        // 群复读注册
+        if(s[0].equals("/group")){
+            if(s.length == 2){
+                String groupId = s[1];
+                String[] groupArr = groupStr.split(",");
+                if(ReUtils.isNotStr(groupArr, groupId)){
+                    //先读文件
+                    Path p = Paths.get("groupIds.txt");
+                    byte[] data = Files.readAllBytes(p);
+                    String groupIds = new String(data, "utf-8");
+                    String[] a = groupIds.split(",");
+                    if(ReUtils.isNotStr(a, groupId)){
+                        sender.SENDER.sendPrivateMsg(privateMsg,"该群之前已注册");
+                    }else{
+                        String path = "groupIds.txt";
+                        groupIds = ReUtils.trimHeadAndEndChar(groupIds + "," + groupId,",");
+                        Files.write(Paths.get(path), groupIds.getBytes());
+                        sender.SENDER.sendPrivateMsg(privateMsg,"复读注册成功");
+                    }
+                }else {
+                    sender.SENDER.sendPrivateMsg(privateMsg,"该群不在你的群列表");
+                }
+            }
+        }
+
+
+        // 群复读号码删除
+        if(s[0].equals("/groupdel")){
+            if(s.length == 2){
+                String groupId = s[1];
+                String[] groupArr = groupStr.split(",");
+                if(ReUtils.isNotStr(groupArr, groupId)){
+                    //先读文件
+                    Path p = Paths.get("groupIds.txt");
+                    byte[] data = Files.readAllBytes(p);
+                    String groupIds = new String(data, "utf-8");
+                    String[] split = groupIds.split(",");
+                    if(ReUtils.isNotStr(split,groupId)){
+                        String path = "groupIds.txt";
+                        ArrayList<String> grouplist = new ArrayList<>();
+                        for (String g:split) {
+                            grouplist.add(g);
+                        }
+                        grouplist.remove(groupId);
+                        Files.write(Paths.get(path), String.join(",", grouplist).getBytes());
+                        sender.SENDER.sendPrivateMsg(privateMsg,"该群注册删除成功");
+                    }else{
+                        sender.SENDER.sendPrivateMsg(privateMsg,"该群未注册");
+                    }
+                }else{
+                    sender.SENDER.sendPrivateMsg(privateMsg,"该群不在你的群列表");
+                }
+            }
+        }
+
+        // 获取消息正文。
+       /* MessageContent msgContent = privateMsg.getMsgContent();
 
 
         // 向 privateMsg 的账号发送消息，消息为当前接收到的消息。
@@ -82,7 +155,7 @@ public class MyPrivateListen {
         String cat3 = catCodeUtil.getStringTemplate().face(9);
 
         // 在cat码前增加一句 '表情' 并发送
-        sender.sendPrivateMsg(privateMsg, "表情：" + cat3);
+        sender.sendPrivateMsg(privateMsg, "表情：" + cat3);*/
 
     }
 
