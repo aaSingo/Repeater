@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 //import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Beans
 public class MyGroupListen {
-    private static ArrayList<msg> msgList = new ArrayList<>();
+    private static List<msg> msgList = new LinkedList<>();
     private static Logger logger = Logger.getLogger(MyGroupListen.class);
 
 //    private static int a = 0;
@@ -89,9 +89,9 @@ public class MyGroupListen {
         String msgQid = accountInfo.getAccountCode();
         String msgText = groupMsg.getMsg();
 
-        if("973941719".equals(msgQid)){
+        /*if("973941719".equals(msgQid)){
             sender.SENDER.sendGroupMsg(groupMsg, "你飞机呢");
-        }
+        }*/
         if("2272714716".equals(msgQid)){
             sender.SENDER.sendGroupMsg(groupMsg, "发生甚么事了");
         }
@@ -130,17 +130,17 @@ public class MyGroupListen {
                         String[] str = msgText.split(",");
                         String jpgIds =  str[1];
                         if(msg1.getMsgText().contains(jpgIds)&& groupId.equals(msg1.getGroupId())){
-                            //if(!msgQid.equals(msg1.getMsgQid())) {
-                            a = a + 1;
-                            //}
+                            if(!msgQid.equals(msg1.getMsgQid())) {
+                                a = a + 1;
+                            }
                         }
                     }
 
                 }else {
                     if (msgText.equals(msg1.getMsgText()) && groupId.equals(msg1.getGroupId())){
-                       //if(!msgQid.equals(msg1.getMsgQid())){
+                        if(!msgQid.equals(msg1.getMsgQid())){
                             a = a + 1;
-                       // }
+                        }
                     }
                 }
             }
@@ -148,7 +148,7 @@ public class MyGroupListen {
 
             if(msgText == null || "".equals(msgText) || imageCats.size() >1){
             }else {
-                if(a == 3) {
+                if(a == 2) {
                     MessageContentBuilder text = msgBuilder.text(msgText);
                     System.out.println("发送:"+msgText+"   群名"+groupInfo.getGroupName());
                     logger.debug("发送:"+msgText+"   群名:"+groupInfo.getGroupName());
